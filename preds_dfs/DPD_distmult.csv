@@ -1,0 +1,8 @@
+,relations,bias_scores
+0,/people/person/gender,0.1538175901444188
+1,/people/person/languages,0.35575961451041005
+2,/people/person/nationality,0.36013029259225227
+3,/people/person/profession,0.7903882431561425
+4,/people/person/places_lived./people/place_lived/location,0.0
+5,/people/person/spouse_s./people/marriage/type_of_union,0.3263157894736842
+6,/people/person/religion,0.0
