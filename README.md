@@ -14,3 +14,5 @@ python process_wiki5m.py
 mkdir -p trained_models/wiki5m
 python wrap_wiki5m.py
 ```
+## Classifying the entities 
+To classify the entities according to the target relation (in the paper, this means predicting the profession), please refer to the code in experiments/run_tail_prediction.py
