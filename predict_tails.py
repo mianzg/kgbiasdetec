@@ -1,6 +1,6 @@
 """"
-Create Dataframe with tails predictions
-This dataframe can later be used to measure bias
+Create a data-frame with tail predictions
+This data-frame can later be used to measure bias
 """
 from pykeen.datasets import FB15k237
 import pandas as pd
@@ -9,7 +9,7 @@ import os
 import torch
 from collections import Counter
 
-# Inner imports
+#### Internal Imports
 from utils import get_classifier, suggest_relations, remove_infreq_attributes
 from BiasEvaluator import BiasEvaluator
 
@@ -128,6 +128,7 @@ def eval_bias(evaluator,
               preds_df_path=None,
               ):
     """
+    Creates a predictions dataframe & evaluates bias on it
     evaluator: instance of Evaluator(see BiasEvaluator.py),
     classifier_args: dict,
     model_args: dict,
@@ -152,7 +153,6 @@ def eval_bias(evaluator,
     return eval_bias
 
 if __name__ == '__main__':
-
     import argparse
     from classifier import RFRelationClassifier
     from Measurement import DemographicParity, PredictiveParity

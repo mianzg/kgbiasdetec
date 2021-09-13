@@ -14,7 +14,7 @@ from torch.utils.data import DataLoader
 import torch
 import torch.nn as nn
 #### Internal Imports
-from models import MLP
+from classifier_models import MLP
 
 class TargetRelationClassifier:
 

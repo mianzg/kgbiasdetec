@@ -1,7 +1,11 @@
+"""
+Bias Measurement Classes
+Currently implemented : Demographic Parity, Predictive Parity, Translational Likelihood Bias (TLB)
+"""
 import torch
 import pandas as pd
 import numpy as np
-from collections import Counter
+
 from sklearn.metrics import precision_score, accuracy_score, recall_score
 import pykeen.models  
 import time 
