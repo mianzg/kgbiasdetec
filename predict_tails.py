@@ -112,7 +112,7 @@ def get_preds_df(dataset,
         classifier.train()
 
     # get predictions dataframe
-    preds_df = predict_relation_tails(dataset, classifier, target_test_triplets, classifier_type="rf")
+    preds_df = predict_relation_tails(dataset, classifier, target_test_triplets)
     preds_df = add_relation_values(dataset, preds_df, bias_relations)
 
     # save predictions if a path is specified
@@ -272,7 +272,7 @@ if __name__ == '__main__':
                              })
     target_relation = preds_df.relation.loc[0]
 
-    preds_df = predict_relation_tails(dataset, rf, target_test_triplets, classifier_type="rf")
+    preds_df = predict_relation_tails(dataset, rf, target_test_triplets)
     preds_df = add_relation_values(dataset, preds_df, bias_relations)
 
     random_preds = [np.random.randint(num_classes) for __ in preds_df.pred]
