@@ -9,13 +9,13 @@ def get_classifier(dataset, target_relation, num_classes, batch_size, embedding_
     Return a classifier that will classify the tails for the target relations
     Currently only MLP classifier is implemented, but can look into others
     dataset: pykeen.Dataset, knowledge graph dataset e.g fb15k-237
-    target_relation: str, 
+    target_relation: str,
     num_classes: int, number of classification classes
     embedding_model_path: str, path to trained embedding model using pykeen library
     """
     if classifier_type == 'mlp':
         from classifier import TargetRelationClassifier
-        classifier = TargetRelationClassifier(dataset=dataset,
+        return TargetRelationClassifier(dataset=dataset,
                                               embedding_model_path=embedding_model_path,
                                               target_relation=target_relation,
                                               num_classes=num_classes,
@@ -24,15 +24,16 @@ def get_classifier(dataset, target_relation, num_classes, batch_size, embedding_
                                               )
     elif classifier_type == 'rf':
         from classifier import RFRelationClassifier
-        classifier = RFRelationClassifier(dataset=dataset,
+        return RFRelationClassifier(dataset=dataset,
                                           embedding_model_path=embedding_model_path,
                                           target_relation=target_relation,
                                           num_classes=num_classes,
                                           batch_size=batch_size,
+                                          max_depth=3,
+                                          class_weight='balanced',
+                                          max_features='auto',
                                           **model_kwargs
                                           )
-    return classifier
-
 def suggest_relations(dataset):
     """
     Suggest a list of relations to detect bias based on knowledge graph datasets.
@@ -62,7 +63,7 @@ def save_result(result, dataset, args):
     """
     Save dataset summary, and output from Evaluator
 
-    result: dict, bias evaluation result 
+    result: dict, bias evaluation result
     dataset: pykeen.Dataset, knowledge graph dataset e.g fb15k-237
     args: arguments passed when running main program
     """
@@ -97,3 +98,15 @@ def remove_infreq_attributes(attr_counts, key, threshold=10,nan_val=-1):
     if attr_counts[key] <= threshold:
         return nan_val
     return key
+
+def requires_preds_df(bias_measures):
+    """
+    :param bias_measures: a list of bias metrics
+    :return: bool, True if we need a preds dataframe and False if not
+    """
+    require_preds_df = False
+    for m in bias_measures:
+        if m.require_preds_df:
+            require_preds_df = True
+            break
+    return require_preds_df
