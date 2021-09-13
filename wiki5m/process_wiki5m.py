@@ -35,7 +35,7 @@ def convert2humanembeddings(embedding_name, entlist, rellist):
     pickle.dump((human_entity_embeddings, human_relation_embeddings), "./data/wiki5m/human_{}.pkl".format(embedding_name))
 
 embeddings = ["transe", "distmult", "complex", "rotate"]
-with open("./data/wiki5m/human_ent_rel_sorted_list.pkl", 'rb') as f:
+with open("../data/wiki5m/human_ent_rel_sorted_list.pkl", 'rb') as f:
     entlist, rellist = pickle.load(f)
 for e in embeddings:
     convert2humanembeddings(e, entlist, rellist)

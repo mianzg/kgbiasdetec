@@ -26,7 +26,7 @@ class Wiki5m(PathDataSet):
 
 if __name__ == '__main__':
     wiki5m = Wiki5m()
-    with open("data/wiki5m/human_ent_rel_sorted_list.pkl", "rb") as f:
+    with open("../data/wiki5m/human_ent_rel_sorted_list.pkl", "rb") as f:
         ent, rel = pickle.load(f)
     assert list(wiki5m.training.relation_to_id.keys()) == list(wiki5m.testing.relation_to_id.keys())
     assert list(wiki5m.training.relation_to_id.keys()) == rel 
