@@ -1,3 +1,6 @@
+"""
+Wrappers for MLP and random forest classifier, on the task of profession prediction
+"""
 import pprint
 import operator
 import numpy as np
@@ -161,7 +164,7 @@ class TargetRelationClassifier:
         labels = torch.Tensor([self.target2label(tl) for tl in tails])#
         if self.binary:
             labels = torch.tensor(labels, dtype=torch.float, device=self._device
-                                         ) # TODO: binary and multi requires different?
+                                         )
         else:
             labels = torch.tensor(labels, dtype=torch.long, device=self._device
                                          )
@@ -268,7 +271,6 @@ class TargetRelationClassifier:
         else:
             return int(self._target2int[self.OTHER])
 
-
 class RFRelationClassifier:
 
     def __init__(self,dataset,
@@ -285,12 +287,11 @@ class RFRelationClassifier:
         self._device = self.DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
         self.num_classes = num_classes
+        self.binary = (num_classes == 2)
 
         self._batch_size = batch_size
         self.set_data_loaders(target_relation=target_relation)
         self.set_target_labels()
-
-        self.binary = (num_classes == 2)
 
         self._model = torch.load(embedding_model_path, map_location=self._device)
         self.set_classifier(**model_kwargs)
@@ -299,7 +300,7 @@ class RFRelationClassifier:
 
     def set_classifier(self, **model_kwargs):
         from sklearn.ensemble import RandomForestClassifier
-        self._classifier = RandomForestClassifier(warm_start = True,**model_kwargs)
+        self._classifier = RandomForestClassifier(warm_start=True, **model_kwargs)
 
     def predict_tails(self, heads, relation):
         if relation != self._target:
@@ -307,10 +308,7 @@ class RFRelationClassifier:
         heads = heads.to(self._device)
         head_embeddings = self._model.entity_embeddings(heads).detach().numpy()
         yhat = self._classifier.predict(head_embeddings)
-        if self.binary:
-            return torch.round(torch.sigmoid(yhat)).cpu()  # need to put in cpu if trained on gpu...
-        else:
-            return torch.argmax(yhat, 1).cpu()
+        return yhat
 
     def set_data_loaders(self, target_relation):
         relations = [target_relation]
@@ -349,7 +347,7 @@ class RFRelationClassifier:
             heads, tails = self.get_heads_tails(batch)
             heads = self._model.entity_embeddings(heads.to(self._device)).detach().numpy()
             labels = self.targets2labels(tails)
-            labels = labels.type(dtype=torch.int64).to(self._device).detach().numpy()
+            labels = labels.type(dtype=torch.int).to(self._device).detach().numpy()
             self._classifier.n_estimators += 11
             self._classifier.fit(heads, labels)
 
@@ -433,26 +431,3 @@ class RFRelationClassifier:
             return int(self._target2int[target])
         else:
             return int(self._target2int[self.OTHER])
-
-
-if __name__ == '__main__':
-
-    fname = "/Users/alacrity/Documents/uni/Fairness/trained_model.pkl"
-    # Trained Model Path
-    #fname = '/local/scratch/kge_fairness/models/fb15k237/transe_openkeparams_alpha1/replicates/replicate-00000/trained_model.pkl'
-    dataset = FB15k237()
-    GENDER_RELATION = '/people/person/gender'
-    PROFESSION_RELATION = '/people/pearson/profession'
-
-
-    classifier = TargetRelationClassifier(
-                              dataset=dataset,
-                              embedding_model_path=fname,
-                              target_relation=PROFESSION_RELATION,
-                              num_classes=6,
-                              hdims=[25,25,25]
-                              )
-
-    classifier.train(epochs=10)
-
-    print("hi")
